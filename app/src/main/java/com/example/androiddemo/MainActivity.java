@@ -2,12 +2,19 @@ package com.example.androiddemo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.airhockey.android.AirHockeyActivity;
+import com.example.opengles.OpenGLESActivity;
 
 /********************************
  *
@@ -21,19 +28,31 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button buttonTest1;
-    private Button buttonTest2;
+    private TextView tvText;
+
+    private ActivityManager activityManager;
+    private ConfigurationInfo configurationInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        tvText = (TextView)findViewById(R.id.tv_text);
         findViewById(R.id.button_test1).setOnClickListener(new OnClickListener());
         findViewById(R.id.button_test2).setOnClickListener(new OnClickListener());
         findViewById(R.id.button_test_destroy_activity).setOnClickListener(new OnClickListener());
         findViewById(R.id.button_test_explict_intent).setOnClickListener(new OnClickListener());
         findViewById(R.id.button_test_implict_intent).setOnClickListener(new OnClickListener());
+        findViewById(R.id.button_test_opengl).setOnClickListener(new OnClickListener());
+        findViewById(R.id.button_air_hockey).setOnClickListener(new OnClickListener());
+
+        // 获取 OpenGLES 版本
+        activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+        configurationInfo = activityManager.getDeviceConfigurationInfo();
+
+        tvText.setText("OpenGL ES " + String.format("%04x", configurationInfo.reqGlEsVersion));
+
     }
 
 
@@ -57,6 +76,14 @@ public class MainActivity extends AppCompatActivity {
             else if (v.getId() == R.id.button_test_implict_intent) {
                 Intent intent = new Intent("com.example.androiddemo.ACTION_START");
                 intent.addCategory("com.example.androiddemo.TEST_CATEGORY");
+                startActivity(intent);
+            }
+            else if (v.getId() == R.id.button_test_opengl) {
+                Intent intent = new Intent(MainActivity.this, OpenGLESActivity.class);
+                startActivity(intent);
+            }
+            else if (v.getId() == R.id.button_air_hockey) {
+                Intent intent = new Intent(MainActivity.this, AirHockeyActivity.class);
                 startActivity(intent);
             }
         }

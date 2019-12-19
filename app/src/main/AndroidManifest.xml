@@ -9,16 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name="com.airhockey.android.AirHockeyActivity"></activity>
+        <activity android:name="com.example.opengles.OpenGLESActivity" />
         <activity android:name=".TestImplictIntent">
             <intent-filter>
-                <action android:name="com.example.androiddemo.ACTION_START"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="com.example.androiddemo.TEST_CATEGORY"/>
+                <action android:name="com.example.androiddemo.ACTION_START" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.example.androiddemo.TEST_CATEGORY" />
             </intent-filter>
         </activity>
-        <activity android:name=".TestIntentActivity">
-        </activity>
-
+        <activity android:name=".TestIntentActivity" />
         <activity
             android:name=".MainActivity"
             android:label="AndroidDemo">
@@ -26,6 +27,7 @@
             <!-- 配置主活动 -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
