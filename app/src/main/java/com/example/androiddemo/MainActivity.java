@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.airhockey.android.AirHockeyActivity;
 import com.example.opengles.OpenGLESActivity;
+import com.example.util.Utils;
 
 /********************************
  *
@@ -51,8 +52,20 @@ public class MainActivity extends AppCompatActivity {
         activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
         configurationInfo = activityManager.getDeviceConfigurationInfo();
 
-        tvText.setText("OpenGL ES " + String.format("%04x", configurationInfo.reqGlEsVersion));
+        StringBuilder  sb = new StringBuilder();
 
+        sb.append(Utils.getScreenWidth(MainActivity.this));
+        sb.append("x");
+        sb.append(Utils.getScreenHeight(MainActivity.this));
+        sb.append(" Density:");
+        sb.append(Utils.getScreenDensity(MainActivity.this));
+
+        sb.append("\n");
+        sb.append("OpenGL ES Version:");
+        sb.append(String.format("%04x", configurationInfo.reqGlEsVersion));
+        sb.append("\n");
+
+        tvText.setText(sb.toString());
     }
 
 

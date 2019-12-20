@@ -21,6 +21,7 @@ import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_LINES;
 import static android.opengl.GLES20.GL_POINTS;
 import static android.opengl.GLES20.GL_TRIANGLES;
+import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glDrawArrays;
@@ -34,16 +35,24 @@ import static android.opengl.GLES20.glViewport;
 
 public class AirHockeyRender implements GLSurfaceView.Renderer {
 
-    private static final int POSITION_COMPONENT_COUNT = 2;
-
-    private static final int BYTES_PER_FLOAT = 4;
-    private final FloatBuffer vertexData;
-    private final Context context;
-
     private int program;
 
-    private static final String U_COLOR = "u_Color";
-    private int uColorLocation;
+    private final Context context;
+
+    private static final int BYTES_PER_FLOAT = 4;
+
+    private static final int POSITION_COMPONENT_COUNT = 2;
+
+
+    private final FloatBuffer vertexData;
+
+
+
+
+    private static final String A_COLOR = "a_Color";
+    private static final int COLOR_COMPONENT_COUNT = 3;
+    private static final int STRIDE = (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT) * BYTES_PER_FLOAT;
+    private int aColorLocation;
 
     private static final String A_POSITION = "a_Position";
     private int aPositionLocation;
@@ -71,7 +80,7 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
                 4.5f, 12f
         };
         */
-
+/*
         float[] tableVerticesWithTriangles = {
                 // Triangle 1
                 -0.5f, -0.5f,
@@ -90,6 +99,44 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
                 // Mallets
                 0f, -0.25f,
                 0f,  0.25f
+        };
+*/
+/*
+        float[] tableVerticesWithTriangles = {
+                   0f,    0f,
+                -0.5f, -0.5f,
+                 0.5f, -0.5f,
+                 0.5f,  0.5f,
+                -0.5f,  0.5f,
+                -0.5f, -0.5f,
+
+                // Line 1
+                -0.5f, 0f,
+                 0.5f, 0f,
+
+                // Mallets
+                0f, -0.25f,
+                0f,  0.25f
+        };
+
+ */
+        // 代颜色属性
+        float[] tableVerticesWithTriangles = {
+                // Triangle Fan
+                0f,    0f,   1f,   1f,   1f,
+                -0.5f, -0.5f, 0.7f, 0.7f, 0.7f,
+                0.5f, -0.5f, 0.7f, 0.7f, 0.7f,
+                0.5f,  0.5f, 0.7f, 0.7f, 0.7f,
+                -0.5f,  0.5f, 0.7f, 0.7f, 0.7f,
+                -0.5f, -0.5f, 0.7f, 0.7f, 0.7f,
+
+                // Line 1
+                -0.5f, 0f, 1f, 0f, 0f,
+                0.5f, 0f, 1f, 0f, 0f,
+
+                // Mallets
+                0f, -0.25f, 0f, 0f, 1f,
+                0f,  0.25f, 1f, 0f, 0f
         };
 
         // 分配本地内存
@@ -129,19 +176,23 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
 
         glUseProgram(program);
 
-        // 查询 uniform
-        uColorLocation = glGetUniformLocation(program, U_COLOR);
+        // 查询 varying
+        //aColorLocation = glGetUniformLocation(program, A_COLOR);
+        aColorLocation = glGetAttribLocation(program, A_COLOR);
 
         // 查询 属性
         aPositionLocation = glGetAttribLocation(program, A_POSITION);
 
         // 给 opengl 赋值
         vertexData.position(0);
-
-        glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT, false, 0, vertexData);
-
-        //
+        glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, vertexData);
         glEnableVertexAttribArray(aPositionLocation);
+
+
+        // 颜色
+        vertexData.position(POSITION_COMPONENT_COUNT);
+        glVertexAttribPointer(aColorLocation, COLOR_COMPONENT_COUNT, GL_FLOAT, false, STRIDE, vertexData);
+        glEnableVertexAttribArray(aColorLocation);
     }
 
     @Override
@@ -154,18 +205,19 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // 绘制桌面
-        glUniform4f(uColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        //glUniform4f(uColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
+        //glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 
         // 绘制中心线
-        glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+        //glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
         glDrawArrays(GL_LINES, 6, 2);
 
         //
-        glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
+        //glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
         glDrawArrays(GL_POINTS, 8, 1);
 
-        glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
+        //glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
         glDrawArrays(GL_POINTS, 9, 1);
     }
 }
