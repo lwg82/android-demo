@@ -177,7 +177,7 @@ public class AirHockeyRender implements GLSurfaceView.Renderer {
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
 
-        //
+        // 存储数据
         vertexData.put(tableVerticesWithTriangles);
 
         this.context = ctx;

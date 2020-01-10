@@ -23,16 +23,6 @@ import static android.opengl.GLES20.glValidateProgram;
 public class ShaderHelper {
     private static final String TAG = "ShaderHelper";
 
-
-
-    public static int compileVertexShader(String shaderCode){
-        return compileShader(GL_VERTEX_SHADER, shaderCode);
-    }
-
-    public static int compileFragmentShader(String shaderCode){
-        return compileShader(GL_FRAGMENT_SHADER, shaderCode);
-    }
-
     private static int compileShader(int type, String shaderCode){
         final int shaderObjectId = glCreateShader(type);
 
@@ -67,6 +57,14 @@ public class ShaderHelper {
         }
 
         return shaderObjectId;
+    }
+
+    public static int compileVertexShader(String shaderCode){
+        return compileShader(GL_VERTEX_SHADER, shaderCode);
+    }
+
+    public static int compileFragmentShader(String shaderCode){
+        return compileShader(GL_FRAGMENT_SHADER, shaderCode);
     }
 
     public static int linkPrograme(int vertexShaderId, int fragmentShaderId){
@@ -119,5 +117,16 @@ public class ShaderHelper {
         Log.v(TAG, "Result of validating program: " + validateStatus[0] + "\nLog:" + glGetProgramInfoLog(programObjectId));
 
         return validateStatus[0] != 0;
+    }
+
+    public static int buildProgram(String vertexShaderSource, String fragmentShaderSource){
+        int program;
+
+        int vertexShader = compileVertexShader(vertexShaderSource);
+        int fragmentShader = compileFragmentShader(fragmentShaderSource);
+
+        program = linkPrograme(vertexShader, fragmentShader);
+
+        return program;
     }
 }
